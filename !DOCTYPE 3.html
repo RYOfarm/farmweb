@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>画像を見て答えるクイズ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        .question-container {
+            margin-top: 20px;
+        }
+        .options button {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>ふぁーむクイズ</h1>
+    <div id="quiz-container">
+        <img id="question-image" src="farm1.png" alt="farm1.png">
+        <div class="question-container">
+            <div id="question-text">このひよこの名前はなんでしょう</div>
+            <div class="options">
+                <button class="option-button" data-index="0">フランドール</button>
+                <button class="option-button" data-index="1">ボリ―ジューヌ</button>
+                <button class="option-button" data-index="2">フランシーヌ</button>
+                <button class="option-button" data-index="3">フランクフルト</button>
+            </div>
+        </div>
+    </div>
+    <div id="result" class="result"></div>
+
+    <script>
+        const quizData = [
+            {
+                image: "farm1.png", // 画像ファイル名
+                question: "このひよこの名前はなんでしょう",
+                options: ["フランドール", "ボリ―ジューヌ", "フランシーヌ", "フランクフルト"],
+                correctIndex: 2 // 正解の選択肢のインデックス
+            },
+            {
+                image: "farm2.png",
+                question: "この犬の名前はなんでしょう",
+                options: ["トパニャ", "ルーシ", "ルーン", "ルビー"],
+                correctIndex: 3
+            },
+            // 他の問題を追加できます
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        const questionImage = document.getElementById("question-image");
+        const questionText = document.getElementById("question-text");
+        const optionButtons = document.querySelectorAll(".option-button");
+        const resultDiv = document.getElementById("result");
+
+        function loadQuestion() {
+            const currentQuestion = quizData[currentQuestionIndex];
+            questionImage.src = currentQuestion.image;
+            questionText.textContent = currentQuestion.question;
+
+            optionButtons.forEach((button, index) => {
+                button.textContent = currentQuestion.options[index];
+                button.onclick = () => checkAnswer(index);
+            });
+        }
+
+        function checkAnswer(selectedIndex) {
+            const currentQuestion = quizData[currentQuestionIndex];
+            if (selectedIndex === currentQuestion.correctIndex) {
+                score++;
+                resultDiv.textContent = "正解！";
+            } else {
+                resultDiv.textContent = "不正解。";
+            }
+
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                setTimeout(() => {
+                    resultDiv.textContent = "";
+                    loadQuestion();
+                }, 1000); // 次の問題まで1.0秒待機
+            } else {
+                setTimeout(() => {
+                    showFinalResult();
+                }, 1000);
+            }
+        }
+
+        function showFinalResult() {
+            document.getElementById("quiz-container").style.display = "none";
+            resultDiv.textContent = `${score} / ${quizData.length} 当然わかるよね？ｗ`;
+        }
+
+        // 最初の問題をロード
+        loadQuestion();
+    </script>
+</body>
+</html>
